@@ -1,5 +1,8 @@
 package wados.starfury.testing.physics;
 
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
 import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.dynamics.ContinuousDetectionMode;
 import org.dyn4j.dynamics.World;
@@ -16,9 +19,21 @@ import org.dyn4j.geometry.Vector2;
 import wados.starfury.testing.physics.tools.ColoredBody;
 import wados.starfury.testing.physics.tools.SandboxController;
 
+
+/**
+ * Demo
+ * 
+ * Hold A,S,D,F to control direction of gravity
+ */
 public class Demo {
 
+	static boolean left, right, up, down, gravUpdate;
+
 	public static void main(String[] args) {
+		
+		System.out.println("DEMO");
+		System.out.println("==============================");
+		System.out.println("Hold [ASDF] to control gravity");
 
 		SandboxController b = new SandboxController(800, 600, 45) {
 			@Override
@@ -145,13 +160,69 @@ public class Demo {
 
 			@Override
 			protected void customUpdate(World world) {
-				double r = Math.random();
-				if (r > 0.005)
+				if (!gravUpdate)
 					return;
-				world.setGravity(world.getGravity().left());
+				gravUpdate = false;
+
+				int x = 0, y = 0;
+
+				if (left)
+					x--;
+				if (right)
+					x++;
+				if (up)
+					y++;
+				if (down)
+					y--;
+
+				world.setGravity(new Vector2(x * 9.81, y * 9.81));
 				world.getBodies().forEach(b -> b.setAsleep(false));
 			}
 		};
+
+		b.getFrame().addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				switch (e.getKeyCode()) {
+				case KeyEvent.VK_A:
+					left = true;
+					break;
+				case KeyEvent.VK_S:
+					down = true;
+					break;
+				case KeyEvent.VK_D:
+					right = true;
+					break;
+				case KeyEvent.VK_W:
+					up = true;
+					break;
+				default:
+					return;
+				}
+				gravUpdate = true;
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				switch (e.getKeyCode()) {
+				case KeyEvent.VK_A:
+					left = false;
+					break;
+				case KeyEvent.VK_S:
+					down = false;
+					break;
+				case KeyEvent.VK_D:
+					right = false;
+					break;
+				case KeyEvent.VK_W:
+					up = false;
+					break;
+				default:
+					return;
+				}
+				gravUpdate = true;
+			}
+		});
 
 		b.start();
 

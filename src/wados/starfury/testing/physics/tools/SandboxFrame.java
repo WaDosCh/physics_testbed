@@ -1,9 +1,11 @@
 package wados.starfury.testing.physics.tools;
 
+import java.awt.BasicStroke;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -17,6 +19,7 @@ import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.geometry.Convex;
 import org.dyn4j.geometry.Transform;
+import org.dyn4j.geometry.Vector2;
 
 public class SandboxFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -73,14 +76,31 @@ public class SandboxFrame extends JFrame {
 		lt.translate(t.getTranslationX() * this.scale, t.getTranslationY() * this.scale);
 		lt.rotate(t.getRotation());
 		g.transform(lt);
-		
+
 		Color color = (b instanceof ColoredBody) ? ((ColoredBody) b).getColor() : null;
 		for (BodyFixture fixture : b.getFixtures()) {
 			Convex convex = fixture.getShape();
 			Graphics2DRenderer.render(g, convex, this.scale, color);
 		}
 
+		Stroke str = g.getStroke();
+		g.setStroke(new BasicStroke(3f));
+
+		// Render Force
+		g.setColor(Color.BLACK);
+		Vector2 f = b.getTransform().getInverseTransformedR(b.getForce());
+		g.drawLine(0, 0, (int) (1 * f.x), (int) (1 * f.y));
+		// Render Velocity
+		g.setColor(Color.BLUE);
+		Vector2 v = b.getTransform().getInverseTransformedR(b.getLinearVelocity());
+		g.drawLine(0, 0, (int) (10 * v.x), (int) (10 * v.y));
+
+		g.setStroke(str);
 		g.setTransform(ot);
+	}
+
+	public Canvas getCanvas() {
+		return this.canvas;
 	}
 
 }

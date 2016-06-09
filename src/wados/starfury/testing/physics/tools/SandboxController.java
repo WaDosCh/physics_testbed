@@ -57,8 +57,14 @@ public class SandboxController {
 	private final NumberFormat formatter = new DecimalFormat("#0.0");
 
 	private final void gameStep() {
-		this.customUpdate(world);
 		this.frame.render(this.world.getBodies());
+		this.customUpdate(world);
+		try {
+			Thread.sleep(2);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		long time = System.nanoTime();
 		long diff = time - this.last;
 		long sampleDiff = time - this.lastSample;
@@ -70,7 +76,11 @@ public class SandboxController {
 		}
 		this.last = time;
 		double elapsedTime = diff / 1.0e9;
-		this.world.update(elapsedTime);
+		this.world.updatev(elapsedTime);
+	}
+
+	public final SandboxFrame getFrame() {
+		return this.frame;
 	}
 
 	protected void worldInit(final World world) {
