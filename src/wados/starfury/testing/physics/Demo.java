@@ -19,7 +19,6 @@ import org.dyn4j.geometry.Vector2;
 import wados.starfury.testing.physics.tools.ColoredBody;
 import wados.starfury.testing.physics.tools.SandboxController;
 
-
 /**
  * Demo
  * 
@@ -30,7 +29,7 @@ public class Demo {
 	static boolean left, right, up, down, gravUpdate;
 
 	public static void main(String[] args) {
-		
+
 		System.out.println("DEMO");
 		System.out.println("==============================");
 		System.out.println("Hold [ASDF] to control gravity");
@@ -39,6 +38,7 @@ public class Demo {
 			@Override
 			protected void worldInit(World world) {
 				world.getSettings().setContinuousDetectionMode(ContinuousDetectionMode.BULLETS_ONLY);
+				world.setGravity(World.ZERO_GRAVITY);
 				Rectangle floorRect = new Rectangle(15.0, 1.0);
 				ColoredBody floor = new ColoredBody();
 				floor.addFixture(new BodyFixture(floorRect));
@@ -180,7 +180,7 @@ public class Demo {
 			}
 		};
 
-		b.getFrame().addKeyListener(new KeyAdapter() {
+		b.getFrame().getCanvas().addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				switch (e.getKeyCode()) {
@@ -196,6 +196,8 @@ public class Demo {
 				case KeyEvent.VK_W:
 					up = true;
 					break;
+				case KeyEvent.VK_Q:
+					System.exit(0);
 				default:
 					return;
 				}

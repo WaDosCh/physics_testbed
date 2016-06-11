@@ -79,6 +79,10 @@ public class ShipDemo {
 		case KeyEvent.VK_R:
 			reset = keyDown;
 			break;
+		case KeyEvent.VK_Q:
+			if (keyDown)
+				System.exit(0);
+			break;
 		default:
 			break;
 		}
